@@ -21,6 +21,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Fixed
 
 - CI workflows referenced the shared `homebridge/.github` workflows at a branch that no longer exists, so no runs started.
+- Release Drafter keeps a draft GitHub release for the next version up to date from merged PRs.
 - Releases now use the shared `npm-release.yml` workflow with npm trusted publishing (OIDC): GitHub releases publish `latest`, and `beta-X.Y.Z` / `alpha-X.Y.Z` branches publish prereleases.
 - `repository.url` in `package.json` uses the form npm expects.
 - README build badge points at the current workflow.
