@@ -2,7 +2,8 @@
 // @ts-ignore
 import vows from "vows";
 import assert from "assert";
-import { SRP, SrpClient, SrpParams, SrpServer } from "../srp";
+import { SRP, SrpClient, SrpParams } from "../srp";
+import { RawSrpServer } from "./raw_server";
 import BigInteger = require("../../jsbn/jsbn");
 
 /*
@@ -322,7 +323,7 @@ function checkVectors(params: SrpParams, inputs: Input, expected: ExpectedOutput
   hexequal(SRP.computeVerifier(params, inputs.salt, inputs.I, inputs.P), expected.v, "v");
 
   const client = new SrpClient(params, inputs.salt, inputs.I, inputs.P, inputs.a, false);
-  const server = new SrpServer(params, expected.v, inputs.b);
+  const server = new RawSrpServer(params, expected.v, inputs.b);
 
   // @ts-ignore
   numequal(client._k, new BigInteger(expected.k.toString("hex"), 16), "k");

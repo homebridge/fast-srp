@@ -2,7 +2,8 @@
 // @ts-ignore
 import vows from "vows";
 import assert from "assert";
-import { SRP, SrpClient, SrpServer } from "../srp";
+import { SRP, SrpClient } from "../srp";
+import { RawSrpServer } from "./raw_server";
 import BigInteger = require("../../jsbn/jsbn");
 
 const params = SRP.params[1024];
@@ -84,7 +85,7 @@ vows.describe("RFC 5054").addBatch({
     },
 
     "B"(v: Buffer): void {
-      const server = new SrpServer(params, v, b);
+      const server = new RawSrpServer(params, v, b);
       assert.strictEqual(server.computeB().toString("hex"), B_expected);
     },
 
@@ -103,7 +104,7 @@ vows.describe("RFC 5054").addBatch({
     },
 
     "S server"(v: Buffer): void {
-      const server = new SrpServer(params, v, b);
+      const server = new RawSrpServer(params, v, b);
       server.setA(Buffer.from(A_expected, "hex"));
       // @ts-ignore
       assert.strictEqual(server._S.toString("hex"), S_expected);
