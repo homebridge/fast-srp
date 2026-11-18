@@ -21,7 +21,7 @@
   "author": "Zarmack Tanen",
   "license": "MIT",
   "engines": {
-    "node": ">=10.17.0"
+    "node": ">=18"
   },
   "files": [
     "jsbn",

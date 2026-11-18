@@ -8,6 +8,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- Minimum supported Node.js version is now 18, matching HAP-NodeJS 0.14 (`engines.node` was `>=10.17.0`).
 - `SrpServer` derives its exponent as `H(PAD(b) | PAD(v))` in a protected `deriveExponent()` method. Messages on the wire are unchanged and clients need no update.
 - Upgraded dev dependencies: TypeScript 5, ESLint 10 (flat config with `typescript-eslint` and `@stylistic`), TypeDoc 0.28, nyc 18, rimraf 6, `@types/node` 20.
 - `tsconfig.json` only loads `@types/node`, so builds no longer pick up unrelated type packages.
