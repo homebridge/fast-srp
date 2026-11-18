@@ -1,9 +1,12 @@
 {
   "out": "docs",
-  "includes": "src",
-  "exclude": ["src/test/**/*"],
-
+  "exclude": [
+    "src/test/**/*"
+  ],
   "excludePrivate": true,
   "excludeProtected": true,
-  "hideGenerator": true
+  "hideGenerator": true,
+  "entryPoints": [
+    "src/srp.ts"
+  ]
 }

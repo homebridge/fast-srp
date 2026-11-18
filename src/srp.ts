@@ -309,7 +309,7 @@ function getK(params: SrpParams, S_buf: Buffer): Buffer {
  * @param {Buffer} B_buf Server public key
  * @param {Buffer} K_buf Shared session key
  */
-function getM1(params: SrpParams, u_buf: Buffer, s_buf: Buffer, A_buf: Buffer, B_buf: Buffer, K_buf: Buffer): Buffer
+function getM1(params: SrpParams, u_buf: Buffer, s_buf: Buffer, A_buf: Buffer, B_buf: Buffer, K_buf: Buffer): Buffer;
 /**
  *
  * @param {SrpParams} params SRP params
@@ -317,7 +317,7 @@ function getM1(params: SrpParams, u_buf: Buffer, s_buf: Buffer, A_buf: Buffer, B
  * @param {Buffer} B_buf Server public key
  * @param {Buffer} K_buf Shared session key
  */
-function getM1(params: SrpParams,                               A_buf: Buffer, B_buf: Buffer, K_buf: Buffer): Buffer
+function getM1(params: SrpParams,                               A_buf: Buffer, B_buf: Buffer, K_buf: Buffer): Buffer;
 function getM1(params: SrpParams, u_buf: Buffer, s_buf: Buffer, A_buf: Buffer, B_buf?: Buffer, K_buf?: Buffer): Buffer {
   if (arguments.length > 4) {
     assertIsBuffer(u_buf, "identity (I)");
@@ -542,9 +542,9 @@ export class SrpServer {
    * @param {Buffer} password_buf Password
    * @param {Buffer} secret2_buf Client private key {@see genKey}
    */
-  constructor(params: SrpParams, salt_buf: Buffer, identity_buf: Buffer, password_buf: Buffer, secret2_buf: Buffer)
-  constructor(params: SrpParams, verifier_buf: Buffer, secret2_buf: Buffer)
-  constructor(params: SrpParams, identity: Identity, secret2_buf: Buffer)
+  constructor(params: SrpParams, salt_buf: Buffer, identity_buf: Buffer, password_buf: Buffer, secret2_buf: Buffer);
+  constructor(params: SrpParams, verifier_buf: Buffer, secret2_buf: Buffer);
+  constructor(params: SrpParams, identity: Identity, secret2_buf: Buffer);
   constructor(params: SrpParams, salt_buf?: Buffer | Identity, identity_buf?: Buffer, password_buf?: Buffer, secret2_buf?: Buffer) {
     this._params = params;
     this._k = getk(params);
@@ -603,7 +603,22 @@ export class SrpServer {
       this._s = identity.salt;
     }
 
+    this._b = this.deriveExponent(this._b, this._v);
     this._B = getB(params, this._k, this._v, this._b);
+  }
+
+  /**
+   * Derives the server exponent used for B and S as H(PAD(b) | PAD(v)).
+   *
+   * @param {BigInteger} b Server secret input
+   * @param {BigInteger} v Verifier
+   * @return {BigInteger} Exponent
+   */
+  protected deriveExponent(b: BigInteger, v: BigInteger): BigInteger {
+    return new BigInteger(crypto.createHash("sha512")
+      .update(padToN(b, this._params))
+      .update(padToN(v, this._params))
+      .digest());
   }
 
   /**

@@ -1,21 +1,26 @@
-name: Node Release
+name: Release
+
+# Latest: GitHub releases. Beta and alpha: pushes to beta-X.Y.Z / alpha-X.Y.Z branches.
+# The release itself lives in homebridge/.github.
 
 on:
+  release:
+    types: [released]
   push:
-    tags:
-      - 'v*.*.*'
+    branches:
+      - beta-*.*.*
+      - alpha-*.*.*
   workflow_dispatch:
 
-jobs:
-  build_and_test:
-    uses: homebridge/.github/.github/workflows/nodejs-build-and-test.yml@main
-    with:
-      enable_coverage: true
-    secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+permissions:
+  id-token: write
+  contents: write
 
-  publish:
-    needs: build_and_test
-    uses: homebridge/.github/.github/workflows/npm-publish.yml@main
-    secrets:
-      npm_auth_token: ${{ secrets.npm_token }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: ${{ github.repository == 'homebridge/fast-srp' }}
+    uses: homebridge/.github/.github/workflows/npm-release.yml@latest
