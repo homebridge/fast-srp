@@ -1,21 +1,49 @@
-name: Node Release
+name: Release
+
+# Stable: push a tag vX.Y.Z
+# Beta:   push to a beta-X.Y.Z branch (publishes X.Y.Z-beta.N with the npm `beta` tag)
 
 on:
   push:
     tags:
       - 'v*.*.*'
+    branches:
+      - beta-*.*.*
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build_and_test:
-    uses: homebridge/.github/.github/workflows/nodejs-build-and-test.yml@main
+    uses: homebridge/.github/.github/workflows/nodejs-build-and-test.yml@latest
     with:
       enable_coverage: true
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
 
-  publish:
+  lint:
     needs: build_and_test
-    uses: homebridge/.github/.github/workflows/npm-publish.yml@main
-    secrets:
-      npm_auth_token: ${{ secrets.npm_token }}
+    uses: homebridge/.github/.github/workflows/eslint.yml@latest
+
+  publish_latest:
+    needs: lint
+    if: ${{ github.repository == 'homebridge/fast-srp' && startsWith(github.ref, 'refs/tags/v') }}
+    permissions:
+      id-token: write
+      contents: read
+    uses: homebridge/.github/.github/workflows/npm-publish-oidc.yml@latest
+
+  publish_beta:
+    needs: lint
+    if: ${{ github.repository == 'homebridge/fast-srp' && startsWith(github.ref, 'refs/heads/beta-') }}
+    permissions:
+      id-token: write
+      contents: read
+    uses: homebridge/.github/.github/workflows/npm-publish-oidc.yml@latest
+    with:
+      tag: beta
+      dynamically_adjust_version: true
+      npm_version_command: pre
+      pre_id: beta
