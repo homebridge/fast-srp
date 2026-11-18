@@ -3,7 +3,7 @@ fast-srp-hap
 
 ![NPM-Version](https://badgen.net/npm/v/fast-srp-hap)
 ![NPM-Downloads](https://badgen.net/npm/dt/fast-srp-hap)
-![Node-CI](https://github.com/homebridge/fast-srp/workflows/Node-CI/badge.svg)
+[![Node Build](https://github.com/homebridge/fast-srp/actions/workflows/build.yml/badge.svg)](https://github.com/homebridge/fast-srp/actions/workflows/build.yml)
 [![Coverage Status](https://coveralls.io/repos/github/homebridge/fast-srp/badge.svg?branch=master)](https://coveralls.io/github/homebridge/fast-srp?branch=master)
 
 Is a pure [NodeJS](https://nodejs.org/) implementation of the [SRP6a protocol](http://srp.stanford.edu/).

@@ -6,17 +6,17 @@
   "types": "lib/srp.d.ts",
   "scripts": {
     "clean": "rimraf lib && rimraf coverage && rimraf .nyc_output",
-    "lint": "eslint 'src/**/*.{js,ts,json}'",
+    "lint": "eslint src",
     "build": "npm run clean && tsc",
     "test": "vows lib/test/test_*.js --spec",
     "test-coverage": "nyc --reporter=lcovonly npm run test",
-    "docs": "typedoc src/srp.ts",
+    "docs": "typedoc",
     "prepublishOnly": "npm run build",
     "postpublish": "npm run clean"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/homebridge/fast-srp"
+    "url": "git+https://github.com/homebridge/fast-srp.git"
   },
   "author": "Zarmack Tanen",
   "license": "MIT",
@@ -28,24 +28,31 @@
     "lib",
     "!lib/test",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
-  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^10.17.60",
-    "typescript": "^4.8.3",
-    "vows": "^0.8.3",
-    "nyc": "^15.1.0",
-    "typedoc": "0.23.15",
-    "eslint": "^8.23.1",
-    "@typescript-eslint/parser": "^5.38.0",
-    "@typescript-eslint/eslint-plugin": "^5.38.0",
-    "rimraf": "^3.0.2"
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^6.0.1",
+    "@types/node": "^20.19.43",
+    "eslint": "^10.15.0",
+    "nyc": "^18.0.0",
+    "rimraf": "^6.1.4",
+    "typedoc": "^0.28.20",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.73.0",
+    "vows": "^0.8.3"
   },
   "nyc": {
     "exclude": [
       "*/test",
       "jsbn"
     ]
+  },
+  "overrides": {
+    "glob": "^14.0.6",
+    "test-exclude": {
+      "minimatch": "^11.0.9"
+    }
   }
 }
