@@ -3,6 +3,7 @@
 import vows from "vows";
 import assert from "assert";
 import { SRP, SrpClient, SrpServer } from "../srp";
+import { RawSrpServer } from "./raw_server";
 
 const params = SRP.params[4096];
 
@@ -69,6 +70,26 @@ vows.describe("srp.js").addBatch({
 
       // server is authentic
       assert.doesNotThrow(() => client.checkM2(serverM2), "M2 didn't check");
+    },
+
+    "server exponent is derived from b and v"(): void {
+      const B1 = new SrpServer(params, verifier, b).computeB();
+      const B2 = new SrpServer(params, verifier, b).computeB();
+      const Braw = new RawSrpServer(params, verifier, b).computeB();
+      assert.strictEqual(B1.toString("hex"), B2.toString("hex"));
+      assert.notStrictEqual(B1.toString("hex"), Braw.toString("hex"));
+    },
+
+    "HAP client and server agree"(): void {
+      const hapParams = SRP.params.hap;
+      const hapVerifier = SRP.computeVerifier(hapParams, salt, identity, password);
+      const hapClient = new SrpClient(hapParams, salt, identity, password, a, true);
+      const hapServer = new SrpServer(hapParams, {username: identity, salt, verifier: hapVerifier}, b);
+      hapServer.setA(hapClient.computeA());
+      hapClient.setB(hapServer.computeB());
+      hapServer.checkM1(hapClient.computeM1());
+      hapClient.checkM2(hapServer.computeM2());
+      assert.strictEqual(hapClient.computeK().toString("hex"), hapServer.computeK().toString("hex"));
     },
 
     "server rejects wrong M1"(): void {

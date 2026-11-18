@@ -603,7 +603,22 @@ export class SrpServer {
       this._s = identity.salt;
     }
 
+    this._b = this.deriveExponent(this._b, this._v);
     this._B = getB(params, this._k, this._v, this._b);
+  }
+
+  /**
+   * Derives the server exponent used for B and S as H(PAD(b) | PAD(v)).
+   *
+   * @param {BigInteger} b Server secret input
+   * @param {BigInteger} v Verifier
+   * @return {BigInteger} Exponent
+   */
+  protected deriveExponent(b: BigInteger, v: BigInteger): BigInteger {
+    return new BigInteger(crypto.createHash("sha512")
+      .update(padToN(b, this._params))
+      .update(padToN(v, this._params))
+      .digest());
   }
 
   /**
